@@ -98,7 +98,7 @@ class DbCache extends wpdb {
 
         } elseif ($type == "UPDATE") {
             $sk = $statement['UPDATE'];
-            if (!empty($st)) {
+            if (!empty($sk)) {
                 foreach ($sk as $option => $expr) {
                     // var_dump($expr);
                     if ($expr['expr_type'] == 'table') {
