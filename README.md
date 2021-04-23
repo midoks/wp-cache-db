@@ -6,7 +6,7 @@ WordPress数据库缓存,零SQL查询缓存。
 放出来大家一起享用。
 
 - B
-[![截图](//github.com/midoks/wp-cache-db/blob/master/Screenshot/Screenshot.png)](//github.com/midoks/wp-cache-db/blob/master/Screenshot/Screenshot.png)
+[![截图](//github.com/midoks/wp-cache-db/blob/main/Screenshot/Screenshot.png)](//github.com/midoks/wp-cache-db/blob/main/Screenshot/Screenshot.png)
 
 * 本地/memcached(本地)[测试可用]
 * 其他没有测试,之前的SAE和BAE。
