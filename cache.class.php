@@ -25,9 +25,20 @@ class DbCache extends wpdb {
 
     public $group_key = 'wp_cache_db_g_';
 
+    public $_info                    = [];
+    public $_is_run_parent_construct = false;
+
     //架构函数|初始化数据
     public function __construct($dbuser, $dbpassword, $dbname, $dbhost) {
-        parent::__construct($dbuser, $dbpassword, $dbname, $dbhost);
+
+        $this->_info = [
+            'dbuser'     => $dbuser,
+            'dbpassword' => $dbpassword,
+            'dbname'     => $dbname,
+            'dbhost'     => $dbhost,
+        ];
+
+        // parent::__construct($dbuser, $dbpassword, $dbname, $dbhost);
 
         $this->parser = new PHPSQLParser();
 
@@ -50,6 +61,14 @@ class DbCache extends wpdb {
             $this->cache_bool = false;
         }
 
+    }
+
+    public function run_parent_construct() {
+        if (!$this->_is_run_parent_construct) {
+            $info = $this->_info;
+            parent::__construct($info['dbuser'], $info['dbpassword'], $info['dbname'], $info['dbhost']);
+            $this->_is_run_parent_construct = true;
+        }
     }
 
     //架构函数|销毁数据
@@ -177,6 +196,12 @@ class DbCache extends wpdb {
                 return 1;
             }
 
+            // if (isset($_GET['debug']) && $_GET['debug'] == 'ok') {
+            //     var_dump('query:', $query);
+            // }
+
+            $this->run_parent_construct();
+
             if ($this->api_cache->cfg['trigger_update'] && $this->api_cache->cfg['enabled']) {
                 $table = $this->get_sql_table($query);
                 $this->clear_table_key($table);
@@ -187,18 +212,12 @@ class DbCache extends wpdb {
 
             $this->cache_bool = apply_filters('query_is_cache', $this->cache_bool);
 
-            // if (isset($_GET['debug']) && $_GET['debug'] == 'ok') {
-            //     var_dump('query:', $this->cache_bool);
-            // }
-
             //DbCache start
-            $cache_select = 'Local'; //默认缓存方式
             // $query_uid    = md5($query);
             $query_uid = hash('md5', $query);
 
             // var_dump($this->api_cache);
 
-            $cached = false; //默认读取的数据为false && 是否支持DB插件缓存
             if ($this->cache_bool && $this->api_cache->cfg['enabled']) {
                 $data = $this->api_cache->read($query_uid);
 
@@ -213,7 +232,13 @@ class DbCache extends wpdb {
                 }
             }
 
-            if (!$cached && $this->api_cache->cfg['enabled']) {
+            // if (isset($_GET['debug']) && $_GET['debug'] == 'ok') {
+            //     var_dump('query:', $query);
+            // }
+
+            $this->run_parent_construct();
+
+            if ($this->api_cache->cfg['enabled']) {
                 $r         = parent::query($query);
                 $save_data = $this->last_result;
                 if (empty($save_data)) {
@@ -233,6 +258,7 @@ class DbCache extends wpdb {
 
     //弃用代码保留
     public function temp_alias() {
+        $cache_select = 'Local'; //默认缓存方式
         if ($this->cache_bool) {
             //对各个不同的查询类型拆分
             if (strpos($query, '_options')) {
