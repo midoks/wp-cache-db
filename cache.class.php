@@ -111,8 +111,19 @@ class DbCache extends wpdb {
             if (!empty($sk)) {
 
                 foreach ($sk as $option => $expr) {
-                    if ($option == 'table') {
-                        $table_name[] = trim($option, '`');
+                    foreach ($expr as $expr_k => $expr_v) {
+                        if ($expr_k == 'table') {
+                            $table_name[] = trim($expr_v, '`');
+                        }
+                    }
+                }
+            }
+        } elseif ($type == "DELETE") {
+            $sk = $statement['DELETE'];
+            if (!empty($sk)) {
+                foreach ($sk as $option => $expr) {
+                    if ($option == 'TABLES') {
+                        $table_name[] = trim($expr[0], '`');
                     }
                 }
             }
@@ -120,6 +131,7 @@ class DbCache extends wpdb {
 
         // if ($uid == '9ef2ee9b053ddc3b556fe8f0dd55efb3') {
         // print_r($statement);
+        // var_dump($table_name);
         // }
         // echo "Parse time complex statement: " . (microtime(true) - $start) . "\n";
         return $table_name;
