@@ -193,7 +193,8 @@ class DbCache extends wpdb {
 
             //DbCache start
             $cache_select = 'Local'; //默认缓存方式
-            $query_uid    = md5($query);
+            // $query_uid    = md5($query);
+            $query_uid = hash('md5', $query);
 
             // var_dump($this->api_cache);
 
