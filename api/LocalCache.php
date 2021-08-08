@@ -26,19 +26,20 @@ class LocalCache {
 
         //读取文件
         $handler = fopen($id, 'r+');
-        $txt     = fread($handler, filesize($id));
+        $content = fread($handler, filesize($id));
         fclose($handler);
-        $txt = unserialize($txt);
-        if (!is_array($txt)) {
+
+        $content = json_decode($content);
+        if (!is_array($content)) {
             return false;
         }
 
-        return $txt;
+        return $content;
     }
 
     //写数据
     public function write($id, $value) {
-        $value   = serialize($value);
+        $value   = json_encode($value);
         $id      = CACHE_LOCAL . $id;
         $handler = fopen($id, 'w+');
         fwrite($handler, $value);
