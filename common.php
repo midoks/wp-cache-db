@@ -7,7 +7,8 @@
 
 //名字设置
 function wp_db_cache_name($name) {
-    $name = CACHE_PATH . $name . '.conf';
+    $name = '/tmp/' . $name . '.conf';
+    // $name = CACHE_PATH . $name . '.conf';
     return $name;
 }
 
