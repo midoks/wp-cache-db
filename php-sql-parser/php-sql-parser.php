@@ -289,7 +289,7 @@ if (!defined('HAVE_PHP_SQL_PARSER')) {
                 case 'DATABASE':
                 case 'SCHEMA':
                     if ($prev_category === 'DROP') {
-                        continue;
+                        continue 2;
                     }
                     $token_category = $upper;
                     break;
@@ -913,7 +913,7 @@ if (!defined('HAVE_PHP_SQL_PARSER')) {
                     }
                     $parseInfo['alias']['name']      = $str;
                     $parseInfo['alias']['base_expr'] = trim($parseInfo['alias']['base_expr']);
-                    continue;
+                    continue 2;
 
                 case 'INDEX':
                     if ($token_category == 'CREATE') {
@@ -935,13 +935,13 @@ if (!defined('HAVE_PHP_SQL_PARSER')) {
                 case 'INNER':
                 case 'OUTER':
                     $parseInfo['token_count']++;
-                    continue;
+                    continue 2;
                     break;
 
                 case 'FOR':
                     $parseInfo['token_count']++;
                     $skip_next = true;
-                    continue;
+                    continue 2;
                     break;
 
                 case 'LEFT':
@@ -965,7 +965,7 @@ if (!defined('HAVE_PHP_SQL_PARSER')) {
 
                 default:
                     if ($upper === "") {
-                        continue; # ends the switch statement!
+                        continue 2; # ends the switch statement!
                     }
 
                     if ($parseInfo['token_count'] === 0) {
